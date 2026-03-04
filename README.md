@@ -1,62 +1,109 @@
-# 2015 Cancer Analysis  🔬🧪📊
+# Cancer Incidence & Mortality Analysis (2015 US County-Level Data)
 
-![download](https://user-images.githubusercontent.com/42464701/233954306-a0027fe7-1f58-49df-8114-2620c8843d8b.png)
+> Statistical analysis of cancer incidence and death rates across US counties using multiple linear regression, exploring the influence of income, poverty, and regional factors.
 
-## Executive Summary
+![US Cancer Incidence Map](https://user-images.githubusercontent.com/42464701/233954306-a0027fe7-1f58-49df-8114-2620c8843d8b.png)
 
-📝 The Cancer Analysis project aims to understand the prevalence of cancer in different regions and identify the factors that influence its incidence and mortality rates. By analyzing and interpreting data related to cancer incidence, mortality, income levels, and other factors, this project provides valuable insights for public health services, policymakers, and healthcare providers to make informed decisions and improve cancer outcomes.
+---
 
 ## Overview
 
-📋 The executive summary is organized into several sections:
+This project analyzes county-level cancer data from the [American Cancer Society (2015)](https://www.cancer.org/) to:
+- Identify regional patterns in cancer incidence and mortality
+- Quantify the relationship between socioeconomic factors and cancer rates
+- Build predictive regression models for incidence and death rates
 
-1. **Location-wise Investigation:** This section analyzes cancer incidence rates at the state, region, and county levels, providing valuable information to implement targeted prevention and control measures.
+The analysis spans **five key areas**:
+1. **Regional Investigation** — State, region, and county-level cancer incidence patterns
+2. **Income-Stratified Analysis** — Cancer rates across four income brackets
+3. **Socioeconomic Correlations** — Impact of poverty, location, and population on outcomes
+4. **Correlation Analysis** — Identifying the strongest predictors of cancer rates
+5. **Regression Modeling** — Multiple linear regression with interaction terms and assumption validation
 
-2. **Incident Rate and Death Rate Analysis for Four Income Levels:** Examines the relationship between income levels and cancer rates, highlighting the impact of income on cancer risk and mortality.
+## Key Findings
 
-3. **Relationship Between Various Factors and Cancer Incidence/Death Rates:** Explores the correlation between poverty, location, and cancer rates, emphasizing the significant role poverty plays in cancer outcomes.
+| Finding | Detail |
+|---------|--------|
+| **Regional disparity** | The Northeast US has significantly higher cancer incidence rates |
+| **Income effect** | Lower-income populations face higher cancer risk and mortality |
+| **Poverty correlation** | Positive correlation between poverty estimates and cancer rates |
+| **Best predictor set** | Income, poverty, population, and regional features yield the most accurate models |
 
-4. **Correlation Analysis:** Identifies the factors most highly correlated with cancer incidence and death rates, including income, poverty, and population estimates.
+## Methodology
 
-5. **Key Findings and Recommendations:** Summarizes the key findings from the analysis and provides actionable recommendations for targeted interventions, cancer research, access to affordable treatment, promotion of healthy behaviors, and comprehensive cancer control programs.
+Both analyses follow the same rigorous pipeline:
 
-## Project Findings and Recommendations
+```
+Raw Data → Cleaning & Feature Engineering → Model Building → Assumption Checking → Model Selection
+```
 
-✨ Based on the analysis, the project reveals the following key findings:
+1. **Data Preprocessing** — Remove missing values, engineer `Region` feature from state abbreviations, categorize five-year trends
+2. **Feature Engineering** — Create categorical variables for trend direction (low/stable/high/unknown)
+3. **Model Building** — Progressive linear regression models with increasing complexity
+4. **Assumption Validation** — Linearity, multicollinearity, independent errors (ACF), normality of residuals, homoscedasticity
+5. **Model Selection** — Final models include interaction terms (`popEst2015 × medIncome`)
 
-- The Northeast region of the US has a significantly higher incidence of cancer.
-- Individuals with lower incomes are at higher risk of developing cancer and experiencing higher death rates.
-- Poverty and population estimates show a positive correlation with cancer rates.
-- Comprehensive cancer control programs should be implemented to address all aspects of prevention, detection, treatment, and survivorship.
+## Project Structure
 
-💡 The project offers the following recommendations:
+```
+├── data/
+│   ├── cancer_data_2015.xlsx           # Raw county-level cancer dataset
+│   └── excel_analysis.xlsx             # Supplementary Excel-based analysis
+│
+├── analysis/
+│   ├── death_rate_analysis.R           # Linear regression: predicting death rates
+│   └── incidence_rate_analysis.R       # Linear regression: predicting incidence rates
+│
+├── reports/
+│   └── executive_summary.pdf           # Full executive summary with findings
+│
+├── visualizations/
+│   └── cancer_incidence_us_map.png     # US cancer incidence heatmap
+│
+└── README.md
+```
 
-1. Develop targeted interventions to address higher poverty and population areas.
-2. Increase investments in cancer research in regions with higher incidence rates.
-3. Improve access to affordable cancer treatment for individuals with lower incomes.
-4. Promote healthy lifestyle behaviors through education and public health campaigns.
-5. Implement comprehensive cancer control programs to tackle the overall burden of cancer.
+## Regression Models
 
-## Regression Analysis
+### Death Rate Analysis
+Three progressive models, with **Model 3** selected as best:
+- **Model 1**: `deathRate ~ PovertyEst + popEst2015 + incidenceRate + avgDeathsPerYear + medIncome`
+- **Model 2**: Adds `Region` feature, removes non-significant variables
+- **Model 3**: Adds interaction term `popEst2015 × medIncome`
 
-📈 The project also includes regression analysis to develop accurate models for predicting cancer incidence and death rates based on various factors. These models can assist in making informed decisions about cancer prevention and treatment strategies.
+### Incidence Rate Analysis
+Four progressive models, with **Model 4** selected as best:
+- **Model 1**: `incidenceRate ~ PovertyEst + popEst2015 + deathRate + avgDeathsPerYear + medIncome`
+- **Model 2**: Adds trend and annual count features
+- **Model 3**: Incorporates `Region`, removes weak predictors
+- **Model 4**: Adds interaction term `popEst2015 × medIncome`
 
-## Repository Structure
+## Visualizations
 
-📁 Files
+| Cancer Incidence by Region | Income vs. Death Rate |
+|---|---|
+| ![Cancer Map](https://user-images.githubusercontent.com/42464701/233954167-c9da58f5-1353-4537-8038-142b750a2f0e.png) | ![Income Analysis](https://user-images.githubusercontent.com/42464701/233954545-8c6f9e07-7dbc-4042-909f-a71c0f02a453.png) |
 
-- `Cancer(DeathRate Analysis).R`: R script for analyzing cancer death rates.
-- `Cancer(Incidence Analysis).R`: R script for analyzing cancer incidence rates.
-- `Cancer_Plot3.png`: Image file representing cancer incidence in the United States.
-- `Data.xlsx`: Raw data used in the analysis.
-- `Excel Cancer Analysis.xlsx`: Additional file related to the analysis.
+| Regional Comparison | Correlation Matrix |
+|---|---|
+| ![Regional](https://user-images.githubusercontent.com/42464701/233954760-db6d6036-8552-45e9-8eb7-0a3a217098b2.png) | ![Correlation](https://user-images.githubusercontent.com/42464701/233955473-75f69539-0804-43df-8bd7-a8e576ecf89d.png) |
 
-## Interesting Plots
+## Tech Stack
 
-# CancerAnalysis![Cancer_Plot3](https://user-images.githubusercontent.com/42464701/233954167-c9da58f5-1353-4537-8038-142b750a2f0e.png)
+- **Language**: R (base)
+- **Methods**: Multiple linear regression, correlation analysis, residual diagnostics
+- **Data**: County-level cancer statistics (American Cancer Society, 2015)
 
-![Cancer_Plot](https://user-images.githubusercontent.com/42464701/233954545-8c6f9e07-7dbc-4042-909f-a71c0f02a453.png)
+## Getting Started
 
-![1](https://user-images.githubusercontent.com/42464701/233954760-db6d6036-8552-45e9-8eb7-0a3a217098b2.png)
+1. Clone the repository
+   ```bash
+   git clone https://github.com/johnmelwin/CancerAnalysis2015.git
+   cd CancerAnalysis2015
+   ```
 
-![3](https://user-images.githubusercontent.com/42464701/233955473-75f69539-0804-43df-8bd7-a8e576ecf89d.png)
+2. Open either R script in RStudio:
+   - Load data from `data/cancer_data_2015.xlsx`
+   - Run `analysis/death_rate_analysis.R` or `analysis/incidence_rate_analysis.R`
+
+3. View the full executive summary in `reports/executive_summary.pdf`
